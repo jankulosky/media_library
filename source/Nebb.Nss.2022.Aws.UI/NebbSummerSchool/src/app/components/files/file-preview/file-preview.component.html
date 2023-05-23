@@ -1,0 +1,53 @@
+<div mat-dialog-content>
+  <br />
+  <div class="content">
+    <div class="details-table">
+      <div class="details">
+        <span class="heading">Name</span>
+        <span>{{ file.name }}</span>
+        <span class="heading">Type</span>
+        <span>{{ file.type | fileType }}</span>
+        <span class="heading">Size</span>
+        <span>{{ file.size | fileSize }}</span>
+        <span class="heading">Created</span>
+        <span>{{ file.createdAt | date }}</span>
+        <span class="heading">Last modified</span>
+        <span>{{ file.lastModifiedAt | date }}</span>
+      </div>
+    </div>
+    <div class="file">
+      <img
+        *ngIf="file.type.includes('image')"
+        [src]="file.fileUrl"
+        height="500"
+        width="650"
+        alt="image"
+      />
+      <video
+        id="video"
+        *ngIf="file.type.includes('video')"
+        [src]="file.fileUrl"
+        height="500"
+        width="650"
+        controls
+      >
+        <track label="English" kind="subtitles" srclang="en" default />
+        <track />
+      </video>
+      <div class="audio-player" *ngIf="file.type.includes('audio')">
+        <div class="icon-container">
+          <audio [src]="file.fileUrl" height="500" controls></audio>
+          <img
+            src="assets/MicrosoftTeams-image.png"
+            height="450"
+            width="650"
+            alt="audio image"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-raised-button mat-dialog-close>Close</button>
+</div>

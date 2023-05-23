@@ -1,0 +1,65 @@
+<h1 mat-dialog-title>Edit File</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fileForm">
+    <mat-form-field appearance="outline">
+      <mat-label>File name</mat-label>
+      <input formControlName="name" matInput placeholder="Name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>File type</mat-label>
+      <input
+        [value]="fileForm.controls['type'].value | fileType"
+        [readonly]="true"
+        matInput
+        placeholder="Type"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>File size</mat-label>
+      <input
+        [value]="fileForm.controls['size'].value | fileSize"
+        [readonly]="true"
+        matInput
+        placeholder="Size"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Created</mat-label>
+      <input
+        [readonly]="true"
+        formControlName="createdAt"
+        matInput
+        [matDatepicker]="picker"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="picker"
+        disabled
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Last modified</mat-label>
+      <input
+        [readonly]="true"
+        formControlName="lastModifiedAt"
+        matInput
+        [matDatepicker]="picker1"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="picker1"
+        disabled
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-action [align]="'end'">
+  <button class="me-2" mat-raised-button color="warn" mat-dialog-close>
+    Close
+  </button>
+  <button mat-raised-button color="primary" (click)="openConfirmEditDialog()">
+    Save
+  </button>
+</div>

@@ -1,0 +1,74 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  name: Default
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: SonarCloudPrepare@1
+  enabled: true
+  inputs:
+    SonarCloud: 'SonarCloud-Winternship2023'
+    organization: 'nebb'
+    scannerMode: 'MSBuild'
+    projectKey: 'nebb-software_Winternship-2023'
+    projectName: 'Winternship 2023'
+    extraProperties: |
+            sonar.exclusions=**/obj/**,**/*.dll, source/Nebb.Nss.2022.Aws.UI/**/*
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+            sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core runtime 6.x'
+  inputs:
+    packageType: runtime
+    Version: 6.x
+
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  enabled: true
+  displayName: 'Unit Tests'
+  inputs:
+    command: 'test'
+    projects: '**/*Test*.csproj'
+    arguments: '--no-build --configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --collect "XPlat Code Coverage"'
+    publishTestResults: true
+
+- task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@5
+  displayName: ReportGenerator
+  inputs:
+    reports: "../**/coverage.opencover.xml"
+    targetdir: "$(Build.SourcesDirectory)/coveragereport"
+    title: Cobertura.xml
+    continueOnError: true
+
+- task: PublishCodeCoverageResults@1
+  enabled: true
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: "$(Build.SourcesDirectory)/coveragereport/cobertura.xml"
+    continueOnError: true
+
+- task: SonarCloudAnalyze@1
+  enabled: true
+- task: SonarCloudPublish@1
+  enabled: true
+  inputs:
+    pollingTimeoutSec: '300'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration Release'

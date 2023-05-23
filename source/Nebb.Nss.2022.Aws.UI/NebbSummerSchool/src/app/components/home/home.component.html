@@ -1,0 +1,153 @@
+<section class="jumbotron text-center mt-5">
+  <div class="container">
+    <h1 class="jumbotron-heading">Upload your media files</h1>
+    <p class="lead text-muted">
+      Here you can easily upload your media files by selecting or dragging and
+      dropping them onto the upload area.
+    </p>
+  </div>
+</section>
+<div class="wrapper">
+  <div
+    class="dropzone mt-5"
+    appDraganddrop
+    (fileDropped)="onFileDropped($event)"
+  >
+    <input
+      type="file"
+      #file
+      multiple
+      (change)="fileBrowseHandler($any($event).target.files)"
+      (change)="uploadFile(file.files)"
+    />
+    <i class="fas fa-cloud-upload-alt"></i>
+    <h4 class="dropzone-name mt-4">Drag and drop your file</h4>
+    <h4>or</h4>
+    <label class="mt-2"
+      ><i class="fa fa-upload" style="color: white; font-size: 18px"></i> Select
+      file</label
+    >
+    <p class="mt-3">
+      (.jpg,.jpeg,.png,.mp4,.avi,.mp3,.wav) Size limit - 50.00 MB
+    </p>
+  </div>
+  <div class="files-list">
+    <div class="single-file" *ngFor="let file of files; let i = index">
+      <img
+        src="https://raw.githubusercontent.com/progtarek/angular-drag-n-drop-directive/dc622c7510c138527c5fa89b551d71693f6f679f/src/assets/img/dnd/ic-file.svg"
+        width="45px"
+        alt="file"
+      />
+      <div class="info">
+        <h4 class="name">
+          {{ file.name }}
+        </h4>
+        <p class="size">
+          {{ file.size | fileSize }}
+        </p>
+        <h4
+          class="messageSuccess"
+          *ngIf="file.uploadStatus === 'Successfully uploaded!'"
+        >
+          Successfully uploaded!
+        </h4>
+        <h4 class="messageFail" *ngIf="file.uploadStatus === 'Upload failed!'">
+          Upload failed!
+        </h4>
+        <div class="progress-cont">
+          <div class="progress" [style.width]="file.progress + '%'"></div>
+        </div>
+      </div>
+      <img
+        src="https://raw.githubusercontent.com/progtarek/angular-drag-n-drop-directive/dc622c7510c138527c5fa89b551d71693f6f679f/src/assets/img/dnd/ic-delete-file.svg"
+        class="delete"
+        width="20px"
+        alt="file"
+        (click)="removeFileFromList(i)"
+      />
+    </div>
+  </div>
+  <div class="container mt-5">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Ex. image.jpg"
+        #input
+      />
+    </mat-form-field>
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>File Name</th>
+          <td mat-cell *matCellDef="let file">{{ file.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+          <td mat-cell *matCellDef="let file">{{ file.type }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="size">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Size</th>
+          <td mat-cell *matCellDef="let file">{{ file.size | fileSize }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+          <td mat-cell *matCellDef="let file">
+            {{ file.createdAt | date : "medium" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastModifiedAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Last Modified
+          </th>
+          <td mat-cell *matCellDef="let file">
+            {{ file.lastModifiedAt | date : "medium" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+          <td mat-cell *matCellDef="let file">
+            <button mat-icon-button color="primary" (click)="editFile(file)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="openArchiveDialog(file)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let file; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">
+            No data matching the filter "{{ input.value }}"
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        class="paginator"
+        aria-label="Select page of files"
+        [pageSizeOptions]="[6, 12, 24, 48]"
+        [showFirstLastButtons]="showFirstLastButtons"
+        [length]="pagination?.totalItems"
+        [pageIndex]="fileParams.pageNumber - 1"
+        (page)="pageChanged($event)"
+      ></mat-paginator>
+    </div>
+  </div>
+  <br />
+  <br />
+</div>

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "thumbnailFunction": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7152",
+      "launchBrowser": false
+    }
+  }
+}

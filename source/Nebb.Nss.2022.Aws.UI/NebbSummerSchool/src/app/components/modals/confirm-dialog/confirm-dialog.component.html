@@ -1,0 +1,29 @@
+<div>
+  <h1 mat-dialog-title>{{ dialogData.dialogHeader }}</h1>
+  <div mat-dialog-content>
+    <p>
+      {{ dialogData.dialogContent }} "<b>{{ dialogData.fileName }}</b
+      >"?
+    </p>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-button
+      mat-raised-button
+      mat-dialog-close
+      (click)="onDeclineClick()"
+    >
+      {{ dialogData.cancelButtonLabel }}
+    </button>
+    <button
+      mat-button
+      mat-raised-button
+      mat-dialog-close
+      cdkFocusInitial
+      color="primary"
+      (click)="onConfirmClick()"
+    >
+      {{ dialogData.confirmButtonLabel }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<main role="main">
+  <section class="jumbotron text-center mt-5">
+    <div class="container">
+      <h1 class="jumbotron-heading">Archive</h1>
+      <p class="lead text-muted">
+        Here you can find all your archived files. You can also restore or
+        permanently delete a file by clicking the appropriate button.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrapper">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-lg-2 col-md-6 col-sm-6" style="width: auto;">
+          <mat-form-field appearance="fill">
+            <mat-label>Select an option</mat-label>
+            <mat-select
+              [(ngModel)]="selectedTypeOption"
+              (selectionChange)="onFilterSelectionChange()"
+            >
+              <mat-option value="allFiles">- All Files -</mat-option>
+              <mat-option value="image">Image</mat-option>
+              <mat-option value="video">Video</mat-option>
+              <mat-option value="audio">Audio</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-6" style="width: auto;">
+          <mat-form-field appearance="fill">
+            <mat-label>Sort By</mat-label>
+            <mat-select
+              [(ngModel)]="selectedSortOption"
+              (selectionChange)="onSortSelectionChange()"
+            >
+              <mat-option value="newestFirst">Newest First</mat-option>
+              <mat-option value="oldestFirst">Oldest First</mat-option>
+              <mat-option value="nameAZ">Name (A-Z)</mat-option>
+              <mat-option value="nameZA">Name (Z-A)</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-6" style="width: auto;">
+          <mat-form-field appearance="fill">
+            <mat-label>Items per page</mat-label>
+
+            <mat-select
+              [(ngModel)]="pageSizeOptions"
+              (selectionChange)="pageChanged($event)"
+            >
+              <mat-option value="6">6</mat-option>
+              <mat-option value="12">12</mat-option>
+              <mat-option value="24">24</mat-option>
+              <mat-option value="48">48</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="searchBy col-lg-4 col-md-6 col-sm-6">
+          <mat-form-field class="example-form-field">
+            <mat-label>Search</mat-label>
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="searchOption"
+              (input)="onSearchChange()"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="album py-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let file of files">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-img-wrapper" (click)="findById(file.id)">
+                <img [src]="file.thumbnailUrl" />
+              </div>
+              <div class="card-body">
+                <p class="card-text">
+                  {{ file.name }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-secondary"
+                      (click)="openRestoreDialog(file)"
+                    >
+                      Restore
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-danger"
+                      (click)="openDeleteDialog(file)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <small class="text-muted">{{
+                    file.lastModifiedAt | date
+                  }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center" *ngIf="pagination">
+      <pagination
+        [boundaryLinks]="true"
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;"
+      >
+      </pagination>
+    </div>
+  </div>
+</main>
