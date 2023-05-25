@@ -1,5 +1,5 @@
 # Introduction 
-Nebb Summer School 2022 Project developed by Nebb
+Nebb Summer School 2023 Media Library Project
 
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
